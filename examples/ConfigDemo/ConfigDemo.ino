@@ -1,5 +1,5 @@
 #include <Arduino.h>
-#include "SCConfig.h"
+#include <SCConfig.h>
 
 /*
 Configuration example.
