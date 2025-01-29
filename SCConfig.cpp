@@ -4,6 +4,8 @@
 #include "EEPROMESP32.h"
 #elif defined(ESP8266)
 #include "EEPROMESP8266.h"
+#elif defined(ARDUINO_ARCH_RP2040)
+#include "EEPROMRP2040.h"
 #endif
 
 SCConfig::SCConfig(void) {
@@ -19,6 +21,8 @@ bool SCConfig::begin(String jsonTemplate, int maxJSONConfigSize, int eepromSize,
   mEERW = new EEPROMESP32();
 #elif defined(ESP8266)
   mEERW = new EEPROMESP8266();
+#elif defined(ARDUINO_ARCH_RP2040)
+  mEERW = new EEPROMRP2040();
 #endif
 #if defined(ESP32) || defined(ESP8266)
   Serial.setRxBufferSize(maxJSONConfigSize);
@@ -35,7 +39,10 @@ bool SCConfig::begin(String jsonTemplate, int maxJSONConfigSize, int eepromSize,
   if (!ParseJSONString(LoadData())) {
     mEERW->Save_UI8(mEEPROMAddress + 0, 255);
 #if defined(ESP32) || defined(ESP8266)
+    Serial.println("Restarting...");
     ESP.restart();
+#elif defined(ARDUINO_ARCH_RP2040)
+    Serial.println("Restart the device");
 #endif
     return false;
   }
@@ -67,6 +74,8 @@ void SCConfig::OnCommand(String command) {
 #if defined(ESP32) || defined(ESP8266)
     Serial.println("Restarting...");
     ESP.restart();
+#elif defined(ARDUINO_ARCH_RP2040)
+    Serial.println("Restart the device");
 #endif
   } else {
     String tempData = LoadData();
@@ -76,6 +85,8 @@ void SCConfig::OnCommand(String command) {
 #if defined(ESP32) || defined(ESP8266)
       Serial.println("Restarting...");
       ESP.restart();
+#elif defined(ARDUINO_ARCH_RP2040)
+      Serial.println("Restart the device");
 #endif
     }
     SaveData(command);
@@ -83,6 +94,8 @@ void SCConfig::OnCommand(String command) {
 #if defined(ESP32) || defined(ESP8266)
     Serial.println("Restarting...");
     ESP.restart();
+#elif defined(ARDUINO_ARCH_RP2040)
+    Serial.println("Restart the device");
 #endif
   }
 }
