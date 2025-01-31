@@ -52,7 +52,7 @@ void SCConfig::Check() {
   String inputString = "";
   while (Serial.available()) {
     inputString += (char)Serial.read();
-    delay(1);
+    if (!Serial.available()) delay(1);
   }
   inputString.trim();
   if (inputString.length()) {
